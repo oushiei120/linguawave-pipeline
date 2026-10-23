@@ -1,0 +1,349 @@
+[
+  {
+    "id": "yuru-gengogaku",
+    "name": "ゆる言語学ラジオ",
+    "url": "https://api.robotstart.jp/api/v1/feeds/35d00481/get-feeds/podcast",
+    "category": "语言学趣谈 · 日本顶流周更长寿播客 (150+期)",
+    "group": "语言文化",
+    "image_url": "https://api.robotstart.jp/storage/12969/phk28dFLifFtnJPb0Xwo"
+  },
+  {
+    "id": "tbs-over-the-sun",
+    "name": "TBSラジオ『OVER THE SUN』",
+    "url": "https://feeds.megaphone.fm/TBS3429819532",
+    "category": "生活与幽默 · 日本播客大赏榜首 (200+期持续更新)",
+    "group": "殿堂广播",
+    "image_url": "https://megaphone.imgix.net/podcasts/a8284cf2-f9e8-11ed-8832-fb91b4fbdfc4/image/OTS_202305_art1400.jpg"
+  },
+  {
+    "id": "chapon",
+    "name": "チャポンと行こう！",
+    "url": "https://feeds.megaphone.fm/KI3247812785",
+    "category": "生活美学 · 北欧暮らしの道具店 周末连更 (200+期)",
+    "group": "生活美食",
+    "image_url": "https://megaphone.imgix.net/podcasts/f4614c0a-42d2-11f1-9d7f-27f27022ae16/image/chapontowikou_20240401_art3000.jpg"
+  },
+  {
+    "id": "donguri-fm",
+    "name": "楽しいラジオ「ドングリFM」",
+    "url": "https://anchor.fm/s/76a89c80/podcast/rss",
+    "category": "日常闲聊 · 9年老牌超千集日常对谈 (1000+期)",
+    "group": "生活美食",
+    "image_url": "https://d3t3ozftmdmh3i.cloudfront.net/staging/podcast_uploaded_nologo/22904533/22904533-1647783321556-c39fc24248a31.jpg"
+  },
+  {
+    "id": "coten-radio",
+    "name": "歴史を面白く学ぶコテンラジオ （COTEN RADIO）",
+    "url": "https://anchor.fm/s/8c2088c/podcast/rss",
+    "category": "历史教养 · 日本播客大赏冠军 (300+期持续更新)",
+    "group": "历史哲学",
+    "image_url": "https://d3t3ozftmdmh3i.cloudfront.net/production/podcast_uploaded_nologo/1233088/1233088-1649987820612-4f36402ecb2db.jpg"
+  },
+  {
+    "id": "jwave-voice-of-food",
+    "name": "味な副音声 ～voice of food～",
+    "url": "https://feed.sonicbowl.cloud/rss/a72229b2-682a-4c6f-90c7-5496a0ad1cd3/",
+    "category": "美食文化 · J-WAVE 官方饮食文化周更",
+    "group": "生活美食",
+    "image_url": "https://static.sonicbowl.cloud/img/podcast/c82819c4-1008-4441-a189-d128df199dbb/c82819c4-1008-4441-a189-d128df199dbb.jpg"
+  },
+  {
+    "id": "scientalk",
+    "name": "サイエントーク",
+    "url": "https://rss.listen.style/p/scientalk/rss",
+    "category": "科学闲聊 · 研究员与语言爱好者漫谈 (200+期)",
+    "group": "前沿科学",
+    "image_url": "https://d3t3ozftmdmh3i.cloudfront.net/production/podcast_uploaded_nologo400/12975949/12975949-1614777494541-118f673e5bf0d.jpg"
+  },
+  {
+    "id": "radio-scientia",
+    "name": "科学のラジオ ～Radio Scientia～",
+    "url": "https://www.omnycontent.com/d/playlist/67122501-9b17-4d77-84bd-a93d00dc791e/dc1ccb5b-4212-4f28-82dd-ad2f0040f50a/4b3c8342-0d7e-4dbb-8f09-ad2f0042397b/podcast.rss",
+    "category": "权威科普 · 日本放送官方科学广播",
+    "group": "前沿科学",
+    "image_url": "https://www.omnycontent.com/d/playlist/67122501-9b17-4d77-84bd-a93d00dc791e/dc1ccb5b-4212-4f28-82dd-ad2f0040f50a/4b3c8342-0d7e-4dbb-8f09-ad2f0042397b/image.jpg?t=1636528766&size=Large"
+  },
+  {
+    "id": "bluebacks-kodansha",
+    "name": "大人の科学教養ブルーバックス＋",
+    "url": "https://anchor.fm/s/1087cbfd8/podcast/rss",
+    "category": "大众科普 · 讲谈社前沿科学新知周更",
+    "group": "前沿科学",
+    "image_url": "https://d3t3ozftmdmh3i.cloudfront.net/staging/podcast_uploaded_nologo/40899066/40899066-1727763632971-d64e9a4f4ef11.jpg"
+  },
+  {
+    "id": "japanese-literature-reading",
+    "name": "日本語【朗読】麗しき日本文学",
+    "url": "https://feeds.soundcloud.com/users/soundcloud:users:694949714/sounds.rss",
+    "category": "名著朗读 · 专业声优演绎夏目漱石/太宰治",
+    "group": "经典文学",
+    "image_url": "https://i1.sndcdn.com/avatars-000684643103-l2xclb-original.jpg"
+  },
+  {
+    "id": "book-catalyst",
+    "name": "ブックカタリスト",
+    "url": "https://api.substack.com/feed/podcast/217357.rss",
+    "fallback_urls": [
+      "https://bookcatalyst.substack.com/feed"
+    ],
+    "category": "读书思考 · 知识管理与书籍精读 (100+期)",
+    "group": "语言文化",
+    "image_url": "https://substackcdn.com/feed/podcast/217357/00582485f9bf36ffcd5ea81898ef479e.jpg"
+  },
+  {
+    "id": "shueisha-kyoyo",
+    "name": "これって教養ですか？",
+    "url": "https://feeds.megaphone.fm/SINC9035077721",
+    "category": "人文教养 · 集英社读书与文化",
+    "group": "语言文化",
+    "image_url": "https://megaphone.imgix.net/podcasts/e73f3ede-4115-11f0-a7c2-0bcf2e257b44/image/art1400.jpg"
+  },
+  {
+    "id": "tohoku-univ-science",
+    "name": "東北大学の研究第一",
+    "url": "https://anchor.fm/s/e7204d28/podcast/rss",
+    "category": "大学科普 · 东北大学前沿研究",
+    "group": "前沿科学",
+    "image_url": "https://d3t3ozftmdmh3i.cloudfront.net/staging/podcast_uploaded_nologo/37207436/37207436-1685600742186-b48454c767f78.jpg"
+  },
+  {
+    "id": "tabemono-radio",
+    "name": "たべものラジオ 〜食を面白く学ぶ〜",
+    "url": "https://rss.listen.style/p/tabemonoradio/rss",
+    "category": "饮食文化 · 日本料理与历史科普",
+    "group": "生活美食",
+    "image_url": "https://d3t3ozftmdmh3i.cloudfront.net/production/podcast_uploaded_nologo/6157077/6157077-1601704254070-521bba7fa6158.jpg"
+  },
+  {
+    "id": "honyomu-nezumi",
+    "name": "本読むネズミ ― 文学を読み、語り、音にする読書Podcast",
+    "url": "https://anchor.fm/s/cf7888fc/podcast/rss",
+    "category": "文学朗读 · 日本名著与文化对谈",
+    "group": "经典文学",
+    "image_url": "https://d3t3ozftmdmh3i.cloudfront.net/production/podcast_uploaded_nologo400/32029532/32029532-1668261317769-cf304192d6e9.jpg"
+  },
+  {
+    "id": "ask-yuka-nihongo",
+    "name": "教えて！ゆか先生 日本語会話表現 60",
+    "url": "https://anchor.fm/s/101b6e638/podcast/rss",
+    "category": "日语进阶 · ASK出版地道会话表达",
+    "group": "日语听说",
+    "image_url": "https://d3t3ozftmdmh3i.cloudfront.net/staging/podcast_uploaded_nologo/40417935/40417935-1724036681024-5e5d3fa96ba29.jpg"
+  },
+  {
+    "id": "nihongo-kotonoha",
+    "name": "日本語の会話のpodcast −ことのは−",
+    "url": "https://anchor.fm/s/9e8ef8ac/podcast/rss",
+    "category": "日语听说 · 自然语速日常会话",
+    "group": "日语听说",
+    "image_url": "https://d3t3ozftmdmh3i.cloudfront.net/production/podcast_uploaded_nologo/27989914/27989914-1655977051390-e74f35b2bb5e9.jpg"
+  },
+  {
+    "id": "kbs-hokahoka",
+    "name": "KBS京都 笑福亭晃瓶のほっかほかラジオ",
+    "url": "https://www.kbs-kyoto.co.jp/radio/hokahoka/rss.xml",
+    "category": "京都对谈 · 每个工作日早晨长寿连更 (7000+期)",
+    "group": "殿堂广播",
+    "image_url": "https://www.kbs-kyoto.co.jp/audio/images/hokahoka_new.jpg"
+  },
+  {
+    "id": "kbs-egao",
+    "name": "KBS京都 川村妙慶の心が笑顔になるラジオ",
+    "url": "https://www.kbs-kyoto.co.jp/radio/egao/rss.xml",
+    "category": "KBS京都 · 心灵与生活随笔",
+    "group": "殿堂广播",
+    "image_url": "http://kbs.webcdn.stream.ne.jp/www11/kbs/audio/images/egao.jpg"
+  },
+  {
+    "id": "kbs-jamjam",
+    "name": "KBS京都 大友良英のJAMJAMラジオ",
+    "url": "https://www.kbs-kyoto.co.jp/radio/jam/jam.xml",
+    "category": "KBS京都 · 音乐与艺术漫谈",
+    "group": "殿堂广播",
+    "image_url": "https://kbs.webcdn.stream.ne.jp/www11/kbs/audio/images/jamjam.png"
+  },
+  {
+    "id": "kbs-hankei500m",
+    "name": "KBS京都 サウンド版ハンケイ500m",
+    "url": "https://www.kbs-kyoto.co.jp/radio/500/rss.xml",
+    "category": "京都街巷 · 美食与人文生活深度漫游",
+    "group": "殿堂广播",
+    "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts115/v4/39/a7/1c/39a71c0e-bdfe-f139-c757-e7976f829479/mza_10524768987081885269.jpg/600x600bb.jpg"
+  },
+  {
+    "id": "nichiyou-tengoku",
+    "name": "安住紳一郎の日曜天国 (TBSラジオ)",
+    "url": "https://feeds.megaphone.fm/TBS2679398439",
+    "category": "国民殿堂 · 日本收听率断层第一周更长寿广播 (950+期)",
+    "group": "殿堂广播",
+    "image_url": "https://megaphone.imgix.net/podcasts/b15dd10e-dcc7-11ed-aff8-df232ecfe6a2/image/tengoku_art1400.jpg"
+  },
+  {
+    "id": "ghibli-asemamire",
+    "name": "鈴木敏夫のジブリ汗まみれ",
+    "url": "https://www.tfm.co.jp/podcasts/asemamire/podcast.xml",
+    "category": "吉卜力官方 · 宫崎骏搭档制作人对谈与幕后 (950+期)",
+    "group": "殿堂广播",
+    "image_url": "https://www.tfm.co.jp/podcasts/upload/channel/38c598b6a255edcfb20b2203fae73ca4.jpg"
+  },
+  {
+    "id": "tonari-no-zatsudan",
+    "name": "となりの雑談 (TBSラジオ)",
+    "url": "https://feeds.megaphone.fm/TBS6714057012",
+    "category": "生活杂谈 · ジェーン・スー 与 桜林直子 温暖对谈 (190+期)",
+    "group": "殿堂广播",
+    "image_url": "https://megaphone.imgix.net/podcasts/14df18e6-ef0b-11ed-bf9e-87858c0678cf/image/tonari_art1400.jpg"
+  },
+  {
+    "id": "rebuild-fm",
+    "name": "Rebuild.fm",
+    "url": "https://feeds.rebuild.fm/rebuildfm",
+    "category": "科技文化 · 日本程序员与极客圈标杆播客 (550+期)",
+    "group": "科技极客",
+    "image_url": "https://rebuild.fm/images/icon1400.jpg"
+  },
+  {
+    "id": "backspace-fm",
+    "name": "backspace.fm",
+    "url": "https://rss.art19.com/backspace",
+    "category": "数码生活 · 10年千集科技数码日常随笔 (1100+期)",
+    "group": "科技极客",
+    "image_url": "https://content.production.cdn.art19.com/images/37/f9/6c/21/37f96c21-7fa1-4ff1-ad4e-b5c57b9e0750/fc894f2759e6fe8423fdbdf9a4497e2fe27d7d5d21a71e16fdf9e9c3e9a9ea07bc29ee36f981ddbb91f274cb760f381f2b2c9ad320ae9ba3cb979f4ae090d852.jpeg"
+  },
+  {
+    "id": "chotai-seiriron",
+    "name": "超相対性理論",
+    "url": "https://anchor.fm/s/57a9101c/podcast/rss",
+    "category": "认知哲学 · 深度思考与社会概念碰撞 (270+期)",
+    "group": "历史哲学",
+    "image_url": "https://d3t3ozftmdmh3i.cloudfront.net/production/podcast_uploaded_nologo/14766863/14766863-1620392398595-3ca3ef0ea8be7.jpg"
+  },
+  {
+    "id": "yutorikko-tawagoto",
+    "name": "ゆとりっ娘たちのたわごと",
+    "url": "https://anchor.fm/s/6e491dbc/podcast/rss",
+    "category": "日常闲聊 · 日本高人气女性幽默日常 (600+期)",
+    "group": "生活美食",
+    "image_url": "https://d3t3ozftmdmh3i.cloudfront.net/production/podcast_uploaded_nologo/18413164/18413164-1632731835759-33b8a1352e806.jpg"
+  },
+  {
+    "id": "yuru-tetsugaku",
+    "name": "ゆる哲学ラジオ",
+    "url": "https://api.robotstart.jp/api/v1/feeds/372c0491/get-feeds/podcast",
+    "category": "哲学漫谈 · ゆる系列原班人马哲学通俗化 (190+期)",
+    "group": "语言文化",
+    "image_url": "https://api.robotstart.jp/storage/12969/pwPIXnFfvDBFEmshwqGc"
+  },
+  {
+    "id": "rakugo-memorize",
+    "name": "覚える落語　※速記記録本読み",
+    "url": "https://anchor.fm/s/4d062230/podcast/rss",
+    "category": "传统曲艺 · 日本落语单口相声经典速记朗读 (1600+期)",
+    "group": "经典文学",
+    "image_url": "https://d3t3ozftmdmh3i.cloudfront.net/production/podcast_uploaded_nologo/12962772/12962772-1614238539828-564ae89163b2f.jpg"
+  },
+  {
+    "id": "neochi-radio",
+    "name": "深夜の寝落ちラジオ【Japanese Podcast】",
+    "url": "https://anchor.fm/s/684ca8c/podcast/rss",
+    "category": "慢速治愈 · 睡前听力与自然日语 (850+期)",
+    "group": "生活美食",
+    "image_url": "https://d3t3ozftmdmh3i.cloudfront.net/production/podcast_uploaded_nologo/1131109/1131109-1588665790400-05886eb2a85ea.jpg"
+  },
+  {
+    "id": "ryouri-tanoshiku",
+    "name": "料理が楽しくなるラジオ",
+    "url": "https://anchor.fm/s/45dff4cc/podcast/rss",
+    "category": "饮食料理 · 美食灵感与厨房日常 (310+期)",
+    "group": "生活美食",
+    "image_url": "https://d3t3ozftmdmh3i.cloudfront.net/production/podcast_uploaded_nologo/11728345/11728345-1608620701046-e5c928b975ee.jpg"
+  },
+  {
+    "id": "roudoku-no-ana",
+    "name": "朗読のアナ 寺島尚正",
+    "url": "https://api.robotstart.jp/api/v1/feeds/3655048d/get-feeds/podcast",
+    "category": "专业播音 · 资深播音员深情朗读日本名篇 (300+期)",
+    "group": "经典文学",
+    "image_url": "https://api.robotstart.jp/storage/12812/8TFRozgY4T2X1AGUeVeC"
+  },
+  {
+    "id": "mimi-de-yomu-bungaku",
+    "name": "【耳】で読む日本文学《朗読》",
+    "url": "https://anchor.fm/s/e774259c/podcast/rss",
+    "category": "文学有声 · 夏目漱石・芥川龙之介名篇精读 (190+期)",
+    "group": "经典文学",
+    "image_url": "https://d3t3ozftmdmh3i.cloudfront.net/staging/podcast_uploaded_nologo/37311142/37311142-1686052737604-58e57303d7904.jpg"
+  },
+  {
+    "id": "aozora-bunko-person",
+    "name": "青空文庫朗読する人",
+    "url": "https://api.robotstart.jp/api/v1/feeds/36800492/get-feeds/podcast",
+    "category": "青空文库 · 百年经典公版文学名著朗读 (180+期)",
+    "group": "经典文学",
+    "image_url": "https://api.robotstart.jp/storage/12837/t0mnq2aeFCfDjiMAdPyb"
+  },
+  {
+    "id": "tokyo-sanpo",
+    "name": "ラジオ東京散歩",
+    "url": "https://anchor.fm/s/db6f97f4/podcast/rss",
+    "category": "城市漫步 · 东京街巷人文风物散步 (190+期)",
+    "group": "生活美食",
+    "image_url": "https://d3t3ozftmdmh3i.cloudfront.net/staging/podcast_uploaded_nologo/35508828/35508828-1679298457017-76bbf8532f741.jpg"
+  },
+  {
+    "id": "yofukashi-bungaku",
+    "name": "夜ふかしの読み明かし【読書・哲学】",
+    "url": "https://feeds.megaphone.fm/NCB3272912411",
+    "category": "深夜读书 · 人文哲学与经典书单精读 (110+期)",
+    "group": "语言文化",
+    "image_url": "https://megaphone.imgix.net/podcasts/585df8ee-3f90-11f0-8b98-bf888502570b/image/NCB_art1400.jpg"
+  },
+  {
+    "id": "odekake-nihongo",
+    "name": "聞いて、話せる！おでかけ日本語会話",
+    "url": "https://client-storage.ask-books.com/uploads/files/pcast/97580/97580.xml",
+    "category": "情境会话 · ASK出版日本出行日常实战 (170+期)",
+    "group": "日语听说",
+    "image_url": "https://www.ask-books.com/pcast/97580/97580.jpg"
+  },
+  {
+    "id": "adler-psychology",
+    "name": "アドラー心理学で日々を生きる",
+    "url": "https://anchor.fm/s/e51fa67c/podcast/rss",
+    "category": "心理教养 · 被讨厌的勇气与阿德勒日常实践 (180+期)",
+    "group": "历史哲学",
+    "image_url": "https://d3t3ozftmdmh3i.cloudfront.net/staging/podcast_uploaded_nologo/36979503/36979503-1683938634123-5e7c2a7144e54.jpg"
+  },
+  {
+    "id": "mayurika-unagerorin",
+    "name": "マユリカのうなげろりん！！",
+    "url": "https://feeds.megaphone.fm/unagerorin",
+    "category": "搞笑对谈 · 关西超人气漫才组合爆笑脱口秀",
+    "group": "殿堂广播",
+    "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts122/v4/f6/26/b1/f626b11d-a5df-e1cc-c8e7-829696a76123/mza_11500113779975659331.jpg/600x600bb.jpg"
+  },
+  {
+    "id": "omusubi-radio",
+    "name": "おむすびラジオ｜京都から地方創生を考える",
+    "url": "https://anchor.fm/s/102f0c438/podcast/rss",
+    "category": "地方创生 · 京都人文视角深度思考",
+    "group": "殿堂广播",
+    "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts221/v4/31/bf/3d/31bf3d4f-f839-c44c-75c5-4ab0fb5619e5/mza_9735639161378821815.jpg/600x600bb.jpg"
+  },
+  {
+    "id": "yasashii-nihongo",
+    "name": "やさしい日本語じかん",
+    "url": "https://anchor.fm/s/10d869b5c/podcast/rss",
+    "category": "慢速日语 · 日常生活与治愈漫谈",
+    "group": "日语听说",
+    "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts221/v4/3d/7b/7e/3d7b7e45-7a27-45ae-46e8-f7c00218cb3b/mza_16783701179725978113.jpg/600x600bb.jpg"
+  },
+  {
+    "id": "kyotojin-hannari",
+    "name": "京都人のはんなりキャスト",
+    "url": "https://anchor.fm/s/b031c30/podcast/rss",
+    "category": "京都文化 · 地道京都腔与日常风物",
+    "group": "殿堂广播",
+    "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts125/v4/c8/78/e3/c878e365-d08b-1980-8e0b-61ce1a4dce7e/mza_8896509104941378321.jpg/600x600bb.jpg"
+  }
+]

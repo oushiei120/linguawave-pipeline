@@ -1,0 +1,7 @@
+numpy<2
+spacy==3.7.5
+ginza==5.2.0
+ja-ginza==5.2.0
+typer<0.16
+click
+cos-python-sdk-v5
