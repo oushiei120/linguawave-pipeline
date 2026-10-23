@@ -142,7 +142,7 @@ def main():
         upgraded[ep_id] = content
 
     if upgraded:
-        K.publish_library(storage, state, upgraded, allow_shrink=args.allow_shrink)
+        K.publish_library(storage, state, upgraded, allow_shrink=args.allow_shrink, summary=True)
     print(f"\n[Rebuild] 升级 {len(upgraded)} 集，保留旧版 {len(failed)} 集")
     for ep_id, title, reasons in failed:
         print(f"  - {ep_id} {title[:30]}: {'; '.join(reasons)}")

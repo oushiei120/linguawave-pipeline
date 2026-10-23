@@ -56,31 +56,33 @@ def main():
         problems.append(f"电台不足 {args.min_per_station} 集：{s['name']}（{s['id']}）只有 {n} 集")
     print(f"[验收] {len(catalog)} 个电台，不足 {args.min_per_station} 集的 {len(short)} 个")
 
-    # 3. newest episode of every station
+    # 3. newest episode of every station, judged against what the run itself saw
+    #    when it scanned the feeds (state["last_scan"]). Episodes published while
+    #    the run was going are the next run's job, not a failure of this one.
     if not args.skip_latest:
-        import cloud_transcribe as C
         state = storage.get_private_json(K.STATE_KEY) or K.empty_state()
+        scan = state.get("last_scan", {})
         live_ids = {e["id"] for e in episodes}
         now = datetime.now(timezone.utc)
         missing = 0
         for s in catalog:
-            try:
-                items = list(C.iter_candidates(s, datetime.min.replace(tzinfo=timezone.utc), now))
-            except Exception as e:
-                problems.append(f"无法读取 RSS：{s['name']}：{e}")
+            seen = scan.get(s["id"])
+            if not seen or not seen.get("ok"):
+                problems.append(f"本次运行没能读到 RSS：{s['name']}")
                 continue
-            if not items:
+            if (now - datetime.fromisoformat(seen["scanned_at"])).total_seconds() > 2 * 86400:
+                problems.append(f"RSS 扫描记录超过 2 天：{s['name']}（上次 {seen['scanned_at'][:16]}）")
                 continue
-            newest = items[0]
-            age = (now - datetime.fromisoformat(newest["published"])).total_seconds() / 86400
-            failure = state["failures"].get(newest["id"], {})
-            if "CONTENT_POLICY" in str(failure.get("last_error", "")) or newest["id"] in state.get("removed", {}):
+            ep_id = seen["newest_id"]
+            failure = state["failures"].get(ep_id, {})
+            if "CONTENT_POLICY" in str(failure.get("last_error", "")) or ep_id in state.get("removed", {}):
                 continue  # intentionally excluded by the blocked-word list
-            if age <= args.latest_days and newest["id"] not in live_ids:
+            age = (now - datetime.fromisoformat(seen["newest_published"])).total_seconds() / 86400
+            if age <= args.latest_days and ep_id not in live_ids:
                 missing += 1
-                why = state["failures"].get(newest["id"], {}).get("last_error", "还未处理（额度或时间用完）")
-                problems.append(f"缺最新一期：{s['name']}「{newest['title'][:30]}」({newest['day']})：{why[:150]}")
-        print(f"[验收] 最近 {args.latest_days:.0f} 天内的最新一期缺 {missing} 个")
+                why = failure.get("last_error", "未处理（额度或运行时间用完）")
+                problems.append(f"缺最新一期：{s['name']}「{seen['newest_title'][:30]}」：{why[:150]}")
+        print(f"[验收] 扫描时各台的最新一期（{args.latest_days:.0f} 天内）缺 {missing} 个")
 
     if problems:
         print("\n".join("  ✗ " + p for p in problems))

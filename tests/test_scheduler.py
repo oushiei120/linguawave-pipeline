@@ -34,7 +34,8 @@ class SchedulerTest(unittest.TestCase):
             published.extend(new)
             return {"published": list(new), "quarantined": []}
 
-        with mock.patch.dict("os.environ", {"GROQ_API_KEY": "g", "DEEPSEEK_API_KEY": "d"}), \
+        # GITHUB_STEP_SUMMARY emptied: tests must not write into the real run summary
+        with mock.patch.dict("os.environ", {"GROQ_API_KEY": "g", "DEEPSEEK_API_KEY": "d", "GITHUB_STEP_SUMMARY": ""}), \
                 mock.patch.object(sys, "argv", ["x"]), \
                 mock.patch.object(C, "preflight"), \
                 mock.patch.object(C, "load_curated_sources", return_value=sources), \
@@ -67,6 +68,13 @@ class SchedulerTest(unittest.TestCase):
         have = [{"id": f"old{i}", "source_id": "b"} for i in range(5)]
         feeds = {"b": [ep("b-new", 1, 120)] + [ep(f"old{i}", 10 + i, 30) for i in range(5)]}
         self.assertEqual(self.run_main(src, feeds, self.state_with(have)), ["b-new"])
+
+    def test_scan_snapshot_is_recorded_for_the_acceptance_check(self):
+        src = [{"id": "f", "name": "F", "url": "u"}]
+        st = self.state_with([{"id": "f1", "source_id": "f"}, {"id": "f2", "source_id": "f"}])
+        self.run_main(src, {"f": [ep("f1", 1, 10), ep("f2", 2, 10)]}, st)
+        self.assertEqual(st["last_scan"]["f"]["newest_id"], "f1")
+        self.assertTrue(st["last_scan"]["f"]["ok"])
 
     def test_stale_newest_is_not_backfilled(self):
         src = [{"id": "c", "name": "C", "url": "u"}]

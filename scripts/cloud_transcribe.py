@@ -570,8 +570,15 @@ def main():
         # Phase 2 - daily latest: each station's newest episode, if published within
         # `latest_days` and not in the library yet. No per-station cap.
         latest = []
+        scan = state.setdefault("last_scan", {})
         for source in sources:
             items = feed(source)
+            # what this run saw, so the acceptance check judges against the same
+            # snapshot instead of episodes published while the run was going
+            scan[source["id"]] = {"scanned_at": K.now_iso(), "ok": bool(items),
+                                  "newest_id": items[0]["id"] if items else "",
+                                  "newest_title": items[0]["title"] if items else "",
+                                  "newest_published": items[0]["published"] if items else ""}
             if items:
                 newest = items[0]
                 age_days = (now - datetime.fromisoformat(newest["published"])).total_seconds() / 86400
@@ -587,6 +594,7 @@ def main():
             if run_candidate(cand, source, ctx) == "ok":
                 processed += 1
 
+    K.save_state(storage, state)
     stop_reason = ctx_stop[0]
     if stop_reason:
         print(f"[CloudWorker] {stop_reason}")
@@ -600,6 +608,9 @@ def main():
                 f.write(f"| {station} | {title[:40]} | {res} |\n")
             if stop_reason:
                 f.write(f"\n> {stop_reason}\n")
+    catalog_ids = K.load_policy()["catalog_ids"]
+    live = sum(1 for m in state["episodes"].values() if K.is_published(m) and m.get("source_id") in catalog_ids)
+    K.write_step_summary(state.get("quarantine", []), live)
     print(f"[CloudWorker] 完成：新发布 {processed} 集。")
 
 

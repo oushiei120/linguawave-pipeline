@@ -32,6 +32,12 @@ class PolicyTest(unittest.TestCase):
         self.assertTrue(K.policy_hits(p, {"title": "ﾃﾛ 事件について"}))
         self.assertTrue(K.policy_hits(p, {"title": "xi-jinping said"}))
 
+    def test_latin_terms_match_whole_words_only(self):
+        p = policy(["ISIS"])
+        self.assertFalse(K.policy_hits(p, {"description": "Hi, this is a Japanese podcast"}))
+        self.assertTrue(K.policy_hits(p, {"description": "news about ISIS today"}))
+        self.assertTrue(K.policy_hits(p, {"description": "ＩＳＩＳ"}))  # full width
+
     def test_term_split_across_two_subtitle_lines(self):
         p = policy(["習近平"])
         self.assertTrue(K.policy_hits(p, {"title": "雑談"}, content(["昨日は習", "近平の話を"])))

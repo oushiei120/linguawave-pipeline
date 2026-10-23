@@ -808,8 +808,15 @@ def load_policy(path: Path = None) -> dict:
     for category, words in raw.get("blocked_terms", {}).items():
         for w in words:
             n = normalize_for_policy(w)
-            if n:
-                terms.append((n, w, category))
+            if not n:
+                continue
+            rx = None
+            if re.fullmatch(r"[A-Za-z0-9 ._-]+", w):
+                # Latin words must match as whole words with their spacing kept:
+                # stripped of spaces, "this is a japanese pod" contains "isis"
+                parts = [re.escape(x) for x in re.split(r"[\s._-]+", w.lower()) if x]
+                rx = re.compile(r"(?<![a-z0-9])" + r"[\s._-]*".join(parts) + r"(?![a-z0-9])")
+            terms.append((n, w, category, rx))
     allowed = [normalize_for_policy(a) for a in raw.get("allowed_phrases", []) if normalize_for_policy(a)]
     catalog_ids = sorted(c["id"] for c in json.loads(CATALOG_FILE.read_text(encoding="utf-8")))
     digest = hashlib.sha256(json.dumps([sorted(set(t[0] for t in terms)), allowed, catalog_ids],
@@ -844,13 +851,24 @@ def policy_hits(policy: dict, meta: dict, content: dict = None, limit: int = 8) 
             continue
         for a in policy["allowed"]:
             norm = norm.replace(a, "")
-        for n, word, category in policy["terms"]:
-            if n in norm and word not in seen:
-                seen.add(word)
+        latin = unicodedata.normalize("NFKC", text or "").lower()
+        for n, word, category, rx in policy["terms"]:
+            if word in seen:
+                continue
+            if rx is not None:
+                m = rx.search(latin)
+                if not m:
+                    continue
+                ctx = latin[max(0, m.start() - 15):m.end() + 15]
+            else:
+                if n not in norm:
+                    continue
                 i = norm.find(n)
-                hits.append(f"{word}（{category}）@{where}：…{norm[max(0, i - 12):i + len(n) + 12]}…")
-                if len(hits) >= limit:
-                    return hits
+                ctx = norm[max(0, i - 12):i + len(n) + 12]
+            seen.add(word)
+            hits.append(f"{word}（{category}）@{where}：…{ctx}…")
+            if len(hits) >= limit:
+                return hits
     return hits
 
 
@@ -1016,7 +1034,7 @@ def validate_episode(meta: dict, content: dict, storage: Storage, policy: dict =
 
 
 def publish_library(storage: Storage, state: dict, new_content: dict, allow_shrink: bool = False,
-                    expected_removals: int = 0) -> dict:
+                    expected_removals: int = 0, summary: bool = False) -> dict:
     """Validate, upload content files, rebuild index.json, save state.
 
     `new_content` maps episode id -> content dict produced in this run. Those
@@ -1085,7 +1103,8 @@ def publish_library(storage: Storage, state: dict, new_content: dict, allow_shri
     storage.put_json(INDEX_KEY, index, cache_control="no-cache")
     save_state(storage, state)
     print(f"[KOTO] ⚡ 已发布 index.json：{len(index_eps)} 集（隔离 {len(quarantined)} 集）。")
-    write_step_summary(quarantined, len(index_eps))
+    if summary:
+        write_step_summary(quarantined, len(index_eps))
     return {"published": published, "quarantined": quarantined}
 
 
