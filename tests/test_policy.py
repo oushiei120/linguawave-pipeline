@@ -77,6 +77,18 @@ class PolicyTest(unittest.TestCase):
         self.assertTrue(K.is_permanently_failed(st, "bad"))
         self.assertEqual(st["episodes"]["fine"]["policy_hash"], p["hash"])
 
+    def test_old_policy_skips_are_judged_again_after_rules_change(self):
+        p = policy(["共産党"])
+        st = K.empty_state()
+        st["failures"] = {
+            "old": {"count": 3, "last_error": "CONTENT_POLICY(标题/简介): ISIS…", "policy_hash": "previous"},
+            "nohash": {"count": 3, "last_error": "CONTENT_POLICY: x"},  # transcript hit: stays
+            "current": {"count": 3, "last_error": "CONTENT_POLICY: y", "policy_hash": p["hash"]},
+            "network": {"count": 1, "last_error": "timeout"},
+        }
+        K.policy_sweep(mock.Mock(), st, p)
+        self.assertEqual(sorted(st["failures"]), ["current", "network", "nohash"])
+
     def test_sweep_skips_episodes_already_checked_with_same_list(self):
         p = policy(["共産党"])
         st = K.empty_state()

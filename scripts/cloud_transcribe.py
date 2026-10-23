@@ -441,7 +441,9 @@ def run_candidate(cand, source, ctx) -> str:
         return "ok"
     reasons = state["episodes"][ep_id].get("quarantined", [])
     del state["episodes"][ep_id]
-    K.record_failure(state, ep_id, cand["title"], source.get("name"), "; ".join(reasons))
+    policy_hit = any(str(r).startswith(("CONTENT_POLICY", "STATION_NOT_ALLOWED")) for r in reasons)
+    K.record_failure(state, ep_id, cand["title"], source.get("name"), "; ".join(reasons),
+                     permanent=policy_hit, policy_hash=K.load_policy()["hash"] if policy_hit else "")
     K.save_state(storage, state)
     reports.append((source.get("name"), cand["title"], f"✗ 未过门槛：{'; '.join(reasons)}"))
     return "fail"
@@ -523,7 +525,7 @@ def main():
         hits = K.policy_hits(policy, {"title": cand["title"], "description": cand.get("description", "")})
         if hits:
             K.record_failure(state, cand["id"], cand["title"], source.get("name"),
-                             "CONTENT_POLICY(标题/简介): " + "; ".join(hits), permanent=True)
+                             "CONTENT_POLICY(标题/简介): " + "; ".join(hits), permanent=True, policy_hash=policy["hash"])
             reports.append((source.get("name"), cand["title"], f"⛔ 屏蔽词，未下载：{hits[0]}"))
             return True
         return False

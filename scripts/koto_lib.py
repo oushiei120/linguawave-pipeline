@@ -322,8 +322,11 @@ def save_state(storage: Storage, state: dict):
     storage.put_json(STATE_KEY, state, cache_control="no-cache", private=True)
 
 
-def record_failure(state: dict, ep_id: str, title: str, station: str, error: str, permanent: bool = False):
+def record_failure(state: dict, ep_id: str, title: str, station: str, error: str, permanent: bool = False,
+                   policy_hash: str = ""):
     entry = state["failures"].setdefault(ep_id, {"count": 0, "failures": []})
+    if policy_hash:
+        entry["policy_hash"] = policy_hash
     entry["count"] = 3 if permanent else entry.get("count", 0) + 1
     entry.update(title=title, station=station, last_error=str(error)[:500], last_attempt=now_iso())
     entry["failures"] = (entry.get("failures", []) + [{"time": entry["last_attempt"], "error": str(error)[:500]}])[-5:]
@@ -782,6 +785,9 @@ def generate_overview(segments: list, title: str, source: str, api_key: str) -> 
 POLICY_FILE = REPO_ROOT / "content_policy.json"  # local working copy, git-ignored
 CATALOG_FILE = REPO_ROOT / "source_catalog.json"
 _POLICY_CACHE = {}
+# Bump when the matching rules change (not the words): episodes skipped or
+# removed under older rules are judged again under the new ones.
+POLICY_ENGINE_VERSION = 2  # 2: Latin terms match whole words
 _STRIP_RE = re.compile(r"[\s\u3000・·•、。，,.！!？?「」『』（）()\[\]【】\-—_~〜～:：;；'\"“”‘’/]+")
 
 
@@ -819,8 +825,8 @@ def load_policy(path: Path = None) -> dict:
             terms.append((n, w, category, rx))
     allowed = [normalize_for_policy(a) for a in raw.get("allowed_phrases", []) if normalize_for_policy(a)]
     catalog_ids = sorted(c["id"] for c in json.loads(CATALOG_FILE.read_text(encoding="utf-8")))
-    digest = hashlib.sha256(json.dumps([sorted(set(t[0] for t in terms)), allowed, catalog_ids],
-                                       ensure_ascii=False).encode()).hexdigest()[:12]
+    digest = hashlib.sha256(json.dumps([POLICY_ENGINE_VERSION, sorted(set(t[0] for t in terms)), allowed,
+                                        catalog_ids], ensure_ascii=False).encode()).hexdigest()[:12]
     return {"terms": terms, "allowed": allowed, "catalog_ids": set(catalog_ids), "hash": digest}
 
 
@@ -872,7 +878,7 @@ def policy_hits(policy: dict, meta: dict, content: dict = None, limit: int = 8) 
     return hits
 
 
-def purge_episode(storage: Storage, state: dict, ep_id: str, reason: str, details: list):
+def purge_episode(storage: Storage, state: dict, ep_id: str, reason: str, details: list, policy_hash: str = ""):
     """Remove an episode for good: delete its audio and content files from COS,
     drop it from the library, and record it so it is never re-added."""
     meta = state["episodes"].pop(ep_id, None) or {}
@@ -883,19 +889,31 @@ def purge_episode(storage: Storage, state: dict, ep_id: str, reason: str, detail
         "title": meta.get("title", ""), "station": meta.get("source_name", ""),
         "reason": reason, "details": details[:8], "removed_at": now_iso()}
     record_failure(state, ep_id, meta.get("title", ""), meta.get("source_name", ""),
-                   f"{reason}: {'; '.join(details[:3])}", permanent=True)
+                   f"{reason}: {'; '.join(details[:3])}", permanent=True, policy_hash=policy_hash)
     print(f"[KOTO] 🗑 已下架并删除 {ep_id}「{meta.get('title', '')[:24]}」：{reason} {details[:3]}")
 
 
 def policy_sweep(storage: Storage, state: dict, policy: dict) -> list:
     """Re-check every library episode whose last check used a different word
     list or station list. Returns the purged episode ids."""
+    # Episodes skipped before download because of their title/description under an
+    # older word list or older matching rules are judged again (free: no download).
+    # Episodes removed for words in their transcript stay removed; re-judging them
+    # would cost a full transcription each time the rules change.
+    stale = [k for k, v in state["failures"].items()
+             if str(v.get("last_error", "")).startswith("CONTENT_POLICY(标题/简介)")
+             and v.get("policy_hash") != policy["hash"]]
+    for k in stale:
+        del state["failures"][k]
+    if stale:
+        print(f"[KOTO] 词表或匹配规则已变更：{len(stale)} 个之前因标题/简介被跳过的单集将按新规则重新判断。")
     purged = []
     for ep_id, meta in list(state["episodes"].items()):
         if meta.get("policy_hash") == policy["hash"]:
             continue
         if meta.get("source_id") not in policy["catalog_ids"]:
-            purge_episode(storage, state, ep_id, "STATION_NOT_ALLOWED", [f"电台 {meta.get('source_name')} 不在电台目录中"])
+            purge_episode(storage, state, ep_id, "STATION_NOT_ALLOWED", [f"电台 {meta.get('source_name')} 不在电台目录中"],
+                          policy_hash=policy["hash"])
             purged.append(ep_id)
             continue
         content = None
@@ -907,7 +925,7 @@ def policy_sweep(storage: Storage, state: dict, policy: dict) -> list:
                 continue
         hits = policy_hits(policy, meta, content)
         if hits:
-            purge_episode(storage, state, ep_id, "CONTENT_POLICY", hits)
+            purge_episode(storage, state, ep_id, "CONTENT_POLICY", hits, policy_hash=policy["hash"])
             purged.append(ep_id)
         else:
             meta["policy_hash"] = policy["hash"]
