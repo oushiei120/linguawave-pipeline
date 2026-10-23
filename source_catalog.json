@@ -80,17 +80,6 @@
     "image_url": "https://i1.sndcdn.com/avatars-000684643103-l2xclb-original.jpg"
   },
   {
-    "id": "book-catalyst",
-    "name": "ブックカタリスト",
-    "url": "https://api.substack.com/feed/podcast/217357.rss",
-    "fallback_urls": [
-      "https://bookcatalyst.substack.com/feed"
-    ],
-    "category": "读书思考 · 知识管理与书籍精读 (100+期)",
-    "group": "语言文化",
-    "image_url": "https://substackcdn.com/feed/podcast/217357/00582485f9bf36ffcd5ea81898ef479e.jpg"
-  },
-  {
     "id": "shueisha-kyoyo",
     "name": "これって教養ですか？",
     "url": "https://feeds.megaphone.fm/SINC9035077721",
