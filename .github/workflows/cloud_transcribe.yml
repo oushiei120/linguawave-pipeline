@@ -1,0 +1,121 @@
+name: Cloud Audio Transcribe & Feed Auto-Update
+
+# Runs every day at 04:00 Beijing time (20:00 UTC).
+#   Phase 1 (baseline): every catalog station gets at least 2 complete episodes.
+#   Phase 2 (daily):    each station's newest episode (published within 14 days).
+# "Complete" = audio on our COS + full subtitles + full translation + grammar +
+# clean timing + cards; anything less never reaches index.json (the app).
+# The final step re-checks those promises against the live index and fails the
+# run (GitHub emails the repo owner) if any is broken.
+
+on:
+  schedule:
+    - cron: '0 20 * * *'
+  workflow_dispatch:
+    inputs:
+      max_episodes:
+        description: '单次最多处理单集数'
+        required: false
+        default: '60'
+      min_per_station:
+        description: '保底：每个电台在 App 里至少有几集完整单集'
+        required: false
+        default: '2'
+      latest_days:
+        description: '每日追新：最新一期在几天内发布的才追'
+        required: false
+        default: '14'
+      station_id:
+        description: '指定优先处理的电台 ID（如 kbs-hokahoka）'
+        required: false
+        default: ''
+      allow_shrink:
+        description: '允许线上集数下降超过 20%（清理时才用，填 yes）'
+        required: false
+        default: ''
+
+concurrency:
+  group: transcribe
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  transcribe_and_publish:
+    name: Transcribe & Publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # typer >= 0.20 no longer pulls in click, which spaCy 3.7 still imports
+          pip install "numpy<2" spacy==3.7.5 ginza==5.2.0 ja-ginza==5.2.0 "typer<0.16" click cos-python-sdk-v5
+
+      - name: Self-check GiNZA before spending any API quota
+        run: python -c "import bunsetsu; assert bunsetsu.get_nlp() is not None; print(bunsetsu.split_segments([{'id':0,'start':0,'end':1,'text':'今日はいい天気です。','words':[]}])[:1])"
+
+      - name: Unit tests
+        run: python -m unittest tests.test_alignment tests.test_scheduler tests.test_policy -v
+
+      # Upgrades episodes still marked legacy (published before the v4 gate).
+      # Finishes in seconds once none are left. Episodes that still fail keep
+      # their live version, so a failure here must not block new transcriptions.
+      - name: Rebuild legacy episodes
+        continue-on-error: true
+        env:
+          PYTHONUNBUFFERED: "1"
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          TENCENT_COS_SECRET_ID: ${{ secrets.TENCENT_COS_SECRET_ID }}
+          TENCENT_COS_SECRET_KEY: ${{ secrets.TENCENT_COS_SECRET_KEY }}
+          TENCENT_COS_REGION: ${{ secrets.TENCENT_COS_REGION || 'ap-shanghai' }}
+          TENCENT_COS_BUCKET: ${{ secrets.TENCENT_COS_BUCKET || 'koto-audio-1314383219' }}
+        run: python scripts/rebuild_library.py
+
+      - name: Transcribe, translate, gate and publish
+        env:
+          PYTHONUNBUFFERED: "1"
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          TENCENT_COS_SECRET_ID: ${{ secrets.TENCENT_COS_SECRET_ID }}
+          TENCENT_COS_SECRET_KEY: ${{ secrets.TENCENT_COS_SECRET_KEY }}
+          TENCENT_COS_REGION: ${{ secrets.TENCENT_COS_REGION || 'ap-shanghai' }}
+          TENCENT_COS_BUCKET: ${{ secrets.TENCENT_COS_BUCKET || 'koto-audio-1314383219' }}
+        run: |
+          SHRINK=""
+          if [ "${{ inputs.allow_shrink }}" = "yes" ]; then SHRINK="--allow-shrink"; fi
+          STATION_ARG=""
+          if [ -n "${{ inputs.station_id }}" ]; then STATION_ARG="--station-id ${{ inputs.station_id }}"; fi
+          python scripts/cloud_transcribe.py $SHRINK $STATION_ARG \
+            --max-episodes "${{ inputs.max_episodes || '60' }}" \
+            --min-per-station "${{ inputs.min_per_station || '2' }}" \
+            --latest-days "${{ inputs.latest_days || '14' }}" \
+            --max-runtime-minutes 300
+
+      - name: Acceptance check (fails the run if any promise is broken)
+        if: always()
+        env:
+          PYTHONUNBUFFERED: "1"
+          TENCENT_COS_SECRET_ID: ${{ secrets.TENCENT_COS_SECRET_ID }}
+          TENCENT_COS_SECRET_KEY: ${{ secrets.TENCENT_COS_SECRET_KEY }}
+          TENCENT_COS_REGION: ${{ secrets.TENCENT_COS_REGION || 'ap-shanghai' }}
+          TENCENT_COS_BUCKET: ${{ secrets.TENCENT_COS_BUCKET || 'koto-audio-1314383219' }}
+        run: |
+          SKIP=""
+          if [ -n "${{ inputs.station_id }}" ]; then SKIP="--skip-latest"; fi
+          python scripts/verify_index_health.py $SKIP \
+            --min-per-station "${{ inputs.min_per_station || '2' }}" \
+            --latest-days "${{ inputs.latest_days || '14' }}"
+

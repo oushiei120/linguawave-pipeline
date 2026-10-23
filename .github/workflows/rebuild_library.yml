@@ -1,0 +1,64 @@
+name: Rebuild Published Library
+
+# One-off upgrade of already-published episodes to the v4 format (timing
+# repair, re-translation of broken batches, whole-episode cards). Does not call
+# Groq. Episodes that still fail the gate keep their current live version.
+
+on:
+  workflow_dispatch:
+    inputs:
+      ids:
+        description: '只重建这些单集 id（逗号分隔，留空 = 全部待重建单集）'
+        required: false
+        default: ''
+
+concurrency:
+  group: transcribe
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install cos-python-sdk-v5
+
+      - name: Unit tests
+        run: python -m unittest tests.test_alignment tests.test_scheduler tests.test_policy -v
+
+      - name: Rebuild and publish
+        env:
+          PYTHONUNBUFFERED: "1"
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          TENCENT_COS_SECRET_ID: ${{ secrets.TENCENT_COS_SECRET_ID }}
+          TENCENT_COS_SECRET_KEY: ${{ secrets.TENCENT_COS_SECRET_KEY }}
+          TENCENT_COS_REGION: ${{ secrets.TENCENT_COS_REGION || 'ap-shanghai' }}
+          TENCENT_COS_BUCKET: ${{ secrets.TENCENT_COS_BUCKET || 'koto-audio-1314383219' }}
+        run: python scripts/rebuild_library.py --ids "${{ inputs.ids }}"
+
+      - name: Verify live index
+        if: always()
+        env:
+          PYTHONUNBUFFERED: "1"
+          TENCENT_COS_SECRET_ID: ${{ secrets.TENCENT_COS_SECRET_ID }}
+          TENCENT_COS_SECRET_KEY: ${{ secrets.TENCENT_COS_SECRET_KEY }}
+          TENCENT_COS_REGION: ${{ secrets.TENCENT_COS_REGION || 'ap-shanghai' }}
+          TENCENT_COS_BUCKET: ${{ secrets.TENCENT_COS_BUCKET || 'koto-audio-1314383219' }}
+        run: python scripts/verify_index_health.py --skip-latest
+
